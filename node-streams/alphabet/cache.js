@@ -12,11 +12,11 @@ Cache.store = {};
 Cache.prototype = Object.create(stream.Writable.prototype);
 Cache.prototype.constructor = Cache;
 
-Cache.prototype._Write = function(chunk, encoding, callback) {
+Cache.prototype._write = function(chunk, encoding, callback) {
   if (!this._value) {
     this._value = chunk;
   } else {
-    this._value = Buffer.concat([this._Value, chunk]);
+    this._value = Buffer.concat([this._value, chunk]);
   }
   callback();
 };
