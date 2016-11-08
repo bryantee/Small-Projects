@@ -6,8 +6,9 @@ readableStream.setEncoding('utf8');
 
 readableStream.on('data', function(chunk) {
   text += chunk;
+  console.log('chunk \n', chunk);
 });
 
 readableStream.on('end', function() {
-  console.log(text);
+  // console.log(text);
 });
