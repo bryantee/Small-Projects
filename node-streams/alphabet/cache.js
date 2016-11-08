@@ -5,7 +5,7 @@ function Cache(key, options) {
   this._key = key;
   this._value = null;
   this.on('finish', function() {
-    Cache.store[this._key] = this._value;
+    Cache.store[this._key] = this._value.toString();
   });
 };
 Cache.store = {};
