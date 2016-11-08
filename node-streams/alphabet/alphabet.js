@@ -1,5 +1,7 @@
 var stream = require('stream');
 
+// Alpha is inheriting from stream.Readable and thus becoming a readable object Class
+// to instantiate Alphabet instances (which are readables)
 function Alphabet(options) {
     stream.Readable.call(this, options);
     this._start = 'a';
@@ -20,4 +22,3 @@ Alphabet.prototype._read = function() {
 };
 
 module.exports = Alphabet;
-
