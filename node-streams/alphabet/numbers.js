@@ -16,9 +16,6 @@ Numbers.prototype._read = function () {
   this.push(buf);
   if (this._currNum == this._end) this.push(null);
   this._currNum++;
-  // for (var i = 0; i < Math.floor((numbers.length)/2); i++) {
-  //   this._randomNumbers.push(numbers[Math.floor(Math.random() * numbers.length)]);
-  // }
 };
 
 module.exports = Numbers;
