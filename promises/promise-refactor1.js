@@ -2,6 +2,7 @@
 
 function wait(seconds) {
   return new Promise(resolve => {
+    console.log('setTimeout');
     setTimeout(() => {
       resolve(new Date()); // <-- function call turns into resolve
     }, seconds * 1000);     // <-- second parameter of setTimeout function, seconds arg * 1000 ms
@@ -10,7 +11,9 @@ function wait(seconds) {
 
 console.log('console log BEFORE calling wait:', new Date());
 
-wait(1).then( date => {
+var wait1 = wait(1)
+console.log('Then')
+wait1.then( date => {
   console.log('Console log after 1st promise', date);
   return wait(1);
 }).then( date => {

@@ -8,9 +8,9 @@ console.log('console log BEFORE calling wait:', new Date());
 
 wait(3, date => {   // <-- callback function declaration with 'date' as parameter
   console.log('Console log inside 1st callback:', date);
-  wait(2, date => {
+  wait(1, date => {
     console.log('Console log inside 2nd callback:', date);
-    wait(5, date => {
+    wait(1, date => {
       console.log('console log inside 3rd callback:', date);
     });
   });
