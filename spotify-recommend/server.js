@@ -1,3 +1,5 @@
+// TODO: Remove console logs after development complete
+
 'use strict';
 
 import unirest from 'unirest';
@@ -7,6 +9,7 @@ import events from 'events';
 const app = express();
 app.use(express.static('public'));
 
+// function returns emitter object with hardcoded unirest url
 const getFromApi = function(endpoint, args) {
   let emitter = new events.EventEmitter();
   unirest.get('https://api.spotify.com/v1/' + endpoint)
@@ -22,6 +25,7 @@ const getFromApi = function(endpoint, args) {
     return emitter;
 };
 
+// app route called from front end of app
 app.get('/search/:name', (req, res) => {
   let searchReq = getFromApi('search', {
     q: req.params.name,
@@ -29,13 +33,17 @@ app.get('/search/:name', (req, res) => {
     type: 'artist'
   });
 
+  // .on(end) listener starts flow of stream? Making FIRST API request?
   searchReq.on('end', item => {
     let artist = item.artists.items[0];
+    // if artist.name is undefined, fatal error
+    // TODO: Need to find way to handle errors properly
     console.log(`Artist: ${artist.name}`);
     let endpoint = 'artists/' + artist.id + '/related-artists';
     console.log(`Endpoint: ${endpoint}`);
-    // setup new emitter object
+    // setup new emitter object for to get related artists
     let searchRelated = getFromApi(endpoint);
+    // making SECOND API request
     searchRelated.on('end', item => {
       if (artist.name) {
         console.log(`searchRelated called with: ${artist.name}`)
@@ -43,7 +51,7 @@ app.get('/search/:name', (req, res) => {
         console.log('No response for artist.');
       }
       // add new property for 'related' which will be an array
-
+      // return entire artist object
       artist.related = item.artists;
       res.json(artist);
     })
