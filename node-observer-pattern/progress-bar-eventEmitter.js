@@ -14,8 +14,18 @@ progressBar.on('complete', (processType) => {
   console.log(`${processType} complete!`);
 });
 
-for (var i = 1; i <= 100; i++) {
+// for (var i = 1; i <= 100; i++) {
+//   if (i === 1) progressBar.emit('start', 'Download');
+//   if (i % 10 === 0) progressBar.emit('progress', i);
+//   if (i === 100) progressBar.emit('complete', 'Download');
+// }
+
+let i = 0;
+
+let interval = setInterval( () => {
+  i++;
   if (i === 1) progressBar.emit('start', 'Download');
   if (i % 10 === 0) progressBar.emit('progress', i);
   if (i === 100) progressBar.emit('complete', 'Download');
-}
+  if (i > 100) clearInterval(interval);
+}, 100);
