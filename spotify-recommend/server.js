@@ -60,17 +60,17 @@ app.get('/search/:name', (req, res) => {
       function getTopTracks(artistObj) {
 
         // Must setup new emitter object for each artist
-        const topTracksReq = getFromApi('artists/' + artistObj.id + '/top-tracks', {
-          country: 'US'
-        });
+        const topTracksReq = getFromApi('artists/' + artistObj.id + '/top-tracks', {country: 'US'});
 
+        // setting up listener for on end
+        // sets tracks property on each related artist
         topTracksReq.on('end', item => {
           let tracks = item.tracks;
           for (var i = 0; i < artist.related.length; i++) {
-            artist.related[i].name === artistObj.name;
-            artist.related[i].tracks = tracks;
+            if (artist.related[i].name === artistObj.name) {
+              artist.related[i].tracks = tracks;
+            }
           }
-          // artist.related[item].tracks = tracks;
           console.log(`Received top tracks for ${artistObj.name}`);
           artistTopTrackCount++
 
@@ -81,12 +81,16 @@ app.get('/search/:name', (req, res) => {
             console.log(`Received all ${artist.related.length} responses.`);
             res.json(artist);
           }
+
+          topTracksReq.on('error', code => {
+            console.log(`Error: ${code}`);
+          });
         });
       }
 
       // iterate through the related artists array
       // Call getTopTracks for each in async fashion
-      artist.related.forEach( item => {
+      artist.related.forEach( (item, index) => {
         console.log(item.name);
         getTopTracks(item);
       });
