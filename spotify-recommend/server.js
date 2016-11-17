@@ -57,21 +57,21 @@ app.get('/search/:name', (req, res) => {
       let artistTopTrackCount = 0;
 
       // initiate calls for top tracks for each artist
-      function getTopTracks(artistObj) {
+      function getTopTracks(relatedArtist) {
 
         // Must setup new emitter object for each artist
-        const topTracksReq = getFromApi('artists/' + artistObj.id + '/top-tracks', {country: 'US'});
+        const topTracksReq = getFromApi('artists/' + relatedArtist.id + '/top-tracks', {country: 'US'});
 
         // setting up listener for on end
         // sets tracks property on each related artist
         topTracksReq.on('end', item => {
           let tracks = item.tracks;
           for (var i = 0; i < artist.related.length; i++) {
-            if (artist.related[i].name === artistObj.name) {
+            if (artist.related[i].name === relatedArtist.name) {
               artist.related[i].tracks = tracks;
             }
           }
-          console.log(`Received top tracks for ${artistObj.name}`);
+          console.log(`Received top tracks for ${relatedArtist.name}`);
           artistTopTrackCount++
 
           // Check for all requests to come back
@@ -81,18 +81,23 @@ app.get('/search/:name', (req, res) => {
             console.log(`Received all ${artist.related.length} responses.`);
             res.json(artist);
           }
+        });
 
-          topTracksReq.on('error', code => {
-            console.log(`Error: ${code}`);
-          });
+        topTracksReq.on('error', code => {
+          console.log(`Error: ${code}`);
+          artistTopTrackCount++;
+          if (artistTopTrackCount === artist.related.length) {
+            console.log(`Received all ${artist.related.length} responses.`);
+            res.json(artist);
+          }
         });
       }
 
       // iterate through the related artists array
       // Call getTopTracks for each in async fashion
-      artist.related.forEach( (item, index) => {
-        console.log(item.name);
-        getTopTracks(item);
+      artist.related.forEach( (relatedArtist, index) => {
+        console.log(relatedArtist.name);
+        getTopTracks(relatedArtist);
       });
 
     })
